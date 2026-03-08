@@ -14,11 +14,11 @@ export default function ListPrimm({ course, progress, isAllFinished }: any) {
     const stepIcons = [Telescope, PlayCircle, SearchCode, Pencil, Cpu];
 
     const deskripsiTahap = [
-        "Ayoo belajar memprediksi program dengan fun",
+        "Ayoo belajar memprediksi program dengan fokus namun enjoy",
         "Ayoo belajar menjalankan program apakah sesuai tebakan",
-        "Ayoo belajar menelusuri program dengan fun",
-        "Ayoo belajar memodifikasi program dengan fun",
-        "Ayoo belajar membuat program dengan fun"
+        "Ayoo belajar menelusuri program dengan fokus namun enjoy",
+        "Ayoo belajar memodifikasi program dengan fokus namun enjoy",
+        "Ayoo belajar membuat program dengan fokus namun enjoy"
     ];
 
     return (

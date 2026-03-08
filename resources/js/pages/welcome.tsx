@@ -1,16 +1,20 @@
 import hero from '@/assets/hero.png';
-import Navbar from'@/layouts/nav-layout';
+import PublicLayout from '@/layouts/nav-layout';
 import Footer from './footer';
-import { ArrowRight } from 'lucide-react';
+import About from './about';
+import Guide from './petunjuk';
+import Contact from './contact';
+
+import { ArrowRight, MessageCircle, Send, Instagram,  } from 'lucide-react';
+
 export default function Welcome(){
     return (
         <>
-        <Navbar>
-            <section>
-               <div className="relative isolate px-5 pt-20 lg:px-10">
+        <PublicLayout>
+            <section id="home" className="w-full">
+               <div className="relative isolate px-5 pt-5 lg:px-10">
                 <div className="mx-auto max-w-7xl py-24">
                     <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10">
-                    
                     <div>
                         <div className="text-center w-full"> 
                             <h1 
@@ -30,14 +34,18 @@ export default function Welcome(){
                             </h1>
                             </div>
                         <p className="mt-8 text-center text-lg font-medium text-gray-500 sm:text-xl">
-                        Website ini merupakan tempat belajar pemrograman dengan berbagai fitur seperti test, lembar kerja siswa dan sekaligus nilainya 
+                        Website ini merupakan tempat belajar pemrograman dengan berbagai fitur seperti test, lembar kerja siswa, daftar nilai dan feedback.
                         </p>
                         <div className=" animate-bounce justify-center mt-10 flex items-center gap-x-6 ">
-                            <button className="w-32 px-4 py-1.5 rounded-md bg-[#78B9B5] font-medium text-white 
-                            hover:bg-gray-300 hover:text-black flex items-center justify-between">
+                            <a 
+                                href="#guide"
+                                className="w-32 px-4 py-1.5 rounded-md bg-[#78B9B5] font-medium text-white 
+                                            hover:bg-gray-300 hover:text-black flex items-center justify-between 
+                                            transition-colors duration-300"
+                                >
                                 <span>Jelajahi</span>
                                 <ArrowRight size={20} />
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -50,7 +58,11 @@ export default function Welcome(){
                 </div>
                 </div>
             </section>
-        </Navbar>
+
+           <Guide /> 
+            <About/>
+            <Contact />
+        </PublicLayout>
         <Footer />
         </>
     );

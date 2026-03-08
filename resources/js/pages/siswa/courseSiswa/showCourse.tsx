@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, Link, router } from '@inertiajs/react'; 
-import { BookOpen, ArrowRight, ArrowLeft, CheckCircle } from "lucide-react"; 
+import { BookOpen, ArrowRight, ArrowLeft, CheckCircle, Download } from "lucide-react"; 
 import AppLayout from '@/layouts/app-layout';
 
 export default function ShowCourse({ course }: { course: any }) {
@@ -68,17 +68,29 @@ export default function ShowCourse({ course }: { course: any }) {
                         )}
                     </div>
 
-                    <div className="flex flex-row items-center justify-end py-6 gap-4 border-t border-gray-100">
+                    <div className="flex flex-col md:flex-row items-center justify-end py-6 gap-4 border-t border-gray-100">
                         <Link 
                             href="/siswa/courseSiswa" 
-                            className="px-6 py-3 text-black bg-gray-400 font-semibold rounded-xl text-xs uppercase tracking-widest  transition-colors flex items-center gap-2"
+                            className="w-full md:w-auto px-6 py-3 text-black bg-gray-400 font-semibold rounded-xl text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
                         >
-                           <ArrowLeft size={18} /> Batal
+                            <ArrowLeft size={18} /> Batal
                         </Link>
+
+                        {course.link_drive && (
+                            <a
+                                href={course.link_drive}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full md:w-auto flex items-center justify-center gap-2 bg-emerald-100 text-emerald-800 border-2 border-emerald-200 px-6 py-3 rounded-xl font-bold text-[12px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm group"
+                            >
+                                <Download size={18} className="group-hover:bounce" />
+                                <span>Unduh PDF</span>
+                            </a>
+                        )}
                         
                         <button 
                             onClick={handleComplete}
-                            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-[12px] uppercase tracking-widest shadow-lg shadow-emerald-50 hover:bg-emerald-700 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2"
+                            className="w-full md:w-auto bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-[12px] uppercase tracking-widest shadow-lg shadow-emerald-50 hover:bg-emerald-700 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2"
                         >
                             Completed <CheckCircle size={18} />
                         </button>

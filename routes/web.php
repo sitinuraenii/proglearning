@@ -130,6 +130,10 @@ Route::get('/guru/course/content-materi/{id}', [CourseController::class, 'edit']
 Route::post('/guru/course/content-materi/{course}', [CourseController::class, 'updateContent'])
     ->name('course.updateContent');
 
+Route::post('/guru/course/update/{course}', [CourseController::class, 'update'])->name('course.update');
+
+Route::delete('/guru/course/destroy/{course}', [CourseController::class, 'destroy'])->name('course.destroy');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/guru/nilai', [GradingController::class, 'index'])->name('grading.index');
     Route::get('/guru/nilai/detail/{userId}', [GradingController::class, 'show'])->name('grading.show');

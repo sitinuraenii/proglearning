@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Head, router } from '@inertiajs/react';
 import { 
-    ArrowRight,ArrowLeft, CheckCircle2, Code2, BookOpen, ExternalLink, Lightbulb, Search
+    ArrowRight,ArrowLeft, CheckCircle2, Code2, BookOpen, ExternalLink, Lightbulb, Search, Download
 } from "lucide-react";
 import AppLayout from '@/layouts/app-layout';
 
@@ -10,9 +10,25 @@ interface Question { id: number;
     pembahasan: string; 
 }
 
-interface PrimmActivity { id: number; tahap: string; gambar: string | null; link_colab: string | null; questions: Question[]; }
-interface PrimmData { [key: string]: PrimmActivity[] | undefined; }
-interface Course { id: number; title: string; description: string; link?: string; file?: string; }
+interface PrimmActivity { 
+    id: number; 
+    tahap: string; 
+    gambar: string | null; 
+    link_colab: string | null; 
+    questions: Question[]; 
+}
+interface PrimmData { 
+    [key: string]: 
+    PrimmActivity[] | undefined; 
+}
+interface Course { 
+    id: number;
+    title: string; 
+    description: string; 
+    link?: string; 
+    file?: string; 
+    link_drive?: string; 
+}
 interface Props { 
     course: Course; 
     primm: PrimmData; 
@@ -22,6 +38,8 @@ interface Props {
 }
 
 export default function ShowPrimm({ course, primm, activeStepFromUrl, existingAnswers, isAllFinished }: Props) {
+    console.log("Apakah Link Drive Ada?", course.link_drive);
+console.log("Apakah Status Selesai?", isAllFinished);
     const steps = ["predict", "run", "investigate", "modify", "make"];
     const initialStepIndex = activeStepFromUrl ? steps.indexOf(activeStepFromUrl.toLowerCase()) : 0;
     const [currentStep, setCurrentStep] = useState<number>(initialStepIndex !== -1 ? initialStepIndex : 0);
@@ -207,7 +225,13 @@ export default function ShowPrimm({ course, primm, activeStepFromUrl, existingAn
                                             <div className="bg-white p-4 rounded-[15px] border border-gray-100 shadow-sm text-center">
                                                 <img 
                                                     src={`/storage/${act.gambar}`} 
-                                                    className="max-w-xs w-full h-auto rounded-[15px] max-h-[170px] mx-auto object-contain" 
+                                                    className={`mx-auto object-contain transition-all duration-300 ${
+                                                        act?.tahap?.toLowerCase() === 'modify' 
+                                                        ? 'max-w-2xl w-full h-auto max-h-[100px]' 
+                                                        : act?.tahap?.toLowerCase() === 'run'
+                                                        ? 'max-w-full h-[150px]'
+                                                        : 'max-w-xs w-full h-auto max-h-[120px]' 
+                                                    }`} 
                                                     alt="Code" 
                                                 />
                                             </div>
@@ -369,6 +393,18 @@ export default function ShowPrimm({ course, primm, activeStepFromUrl, existingAn
 
                     {subView === 'aktivitas' && (
                         <div className="flex flex-col md:flex-row justify-end items-center mt-12 mb-24 gap-4 w-full border-t border-gray-100 pt-10"> 
+                            {isAllFinished && course.link_drive && (
+                                <a
+                                    href={course.link_drive}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 w-full md:w-auto group animate-in zoom-in duration-300"
+                                >
+                                    <Download size={18} className="group-hover:animate-bounce" />
+                                    <span>Unduh Materi Offline (PDF)</span>
+                                </a>
+                            )}
+
                             <div className="flex flex-col md:flex-row items-center md:items-center justify-end gap-4 w-full md:w-auto">
                                 {(activeStep === 'modify' || activeStep === 'make') && activities.length > 0 && (
                                     <div className="flex flex-col justify-end items-center md:items-end gap-2 w-full md:w-auto">

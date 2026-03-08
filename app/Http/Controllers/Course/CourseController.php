@@ -43,6 +43,7 @@ class CourseController extends Controller
           'description' => 'required|string',
           'link'        => 'nullable|url',
           'file'        => 'nullable',
+          'link_drive' => 'nullable|url',
         ]);
 
         Course::create($validated);
@@ -82,7 +83,16 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        //
+        $validated = $request->validate([
+            'title'       => 'required|string',
+            'category_id' => 'required',
+            'description' => 'required|string',
+            'link_drive'  => 'nullable|url',
+        ]);
+
+        $course->update($validated);
+
+        return back()->with('success', 'Materi berhasil diperbarui!');
     }
 
     /**
@@ -92,12 +102,12 @@ class CourseController extends Controller
     {
         DB::table('course_progress')->where('course_id', $course->id)->delete();
     
-    \App\Models\StudentAnswer::whereHas('question.primm', function($q) use ($course) {
-        $q->where('course_id', $course->id);
-    })->delete();
+        \App\Models\StudentAnswer::whereHas('question.primm', function($q) use ($course) {
+            $q->where('course_id', $course->id);
+        })->delete();
 
-    $course->delete();
-    return back();
+        $course->delete();
+        return back();
     }
 
     /**

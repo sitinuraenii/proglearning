@@ -85,7 +85,7 @@ export default function DashboardSiswa({ auth, stats }: Props) {
                         Halo, <span className="text-blue-600">{auth.user.name}</span>
                     </h1>
                     <p className="text-slate-500 font-medium mt-1">
-                        Selamat belajar dan semoga sukses 
+                        Selamat belajar dan semoga sukses ;) . Jangan lupa untuk berdoa terlebih dahulu!!!
                     </p>
                 </div>
 
@@ -104,9 +104,21 @@ export default function DashboardSiswa({ auth, stats }: Props) {
 
                 <div className="bg-[#F7CA89] p-5 rounded-[22px] flex items-center justify-between shadow-sm border border-white/50 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
                     <div>
-                        <div className="text-3xl font-black text-[#BF360C] leading-none mb-2">
-                            {stats?.progresSiswa || 0} / <span className="text-xl text-[#BF360C]/60">{stats?.totalAktivitas || 0}</span>
-                        </div>
+                       <div className="flex items-baseline gap-1.5 text-[#BF360C] mb-2">
+                            <span className="text-4xl font-black tracking-tight">
+                                {stats?.progresSiswa || 0}
+                            </span>
+
+                            <span className="text-sm font-bold uppercase tracking-wide opacity-80">
+                                Selesai
+                            </span>
+                            <div className="flex items-center ml-1">
+                                <span className="text-xl opacity-30 font-light">/</span>
+                                <span className="text-xl ml-1 text-[#BF360C]/60 font-bold">
+                                {stats?.totalAktivitas || 0}
+                                </span>
+                            </div>
+                            </div>
                         <div className="text-[11px] font-black uppercase tracking-widest text-[#BF360C]/80">Aktivitas</div>
                     </div>
                     <div className="bg-white/40 p-3 rounded-2xl shadow-inner">

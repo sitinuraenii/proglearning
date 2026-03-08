@@ -14,7 +14,8 @@ class Course extends Model
     'description',
     'category_id',
     'link',
-    'file'
+    'file',
+    'link_drive',
   ];
 
   public function category()

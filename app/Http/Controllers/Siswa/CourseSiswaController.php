@@ -32,14 +32,23 @@ class CourseSiswaController extends Controller
     {
        $course = Course::with(['primms.questions'])->findOrFail($id);
 
+       $courseData = [
+            'id' => $course->id,
+            'title' => $course->title,
+            'description' => $course->description,
+            'link' => $course->link,
+            'file' => $course->file,
+            'link_drive' => $course->link_drive, 
+        ];
+
         if (str_contains(strtolower($course->title), 'pengenalan')) {
-            return Inertia::render('siswa/courseSiswa/showCourse', ['course' => $course]);
+            return Inertia::render('siswa/courseSiswa/showCourse', ['course' => $courseData]);
         }
 
         $primmData = $course->primms->groupBy('tahap');
 
         return Inertia::render('siswa/courseSiswa/showPrimm', [
-            'course' => $course,
+            'course' => $courseData,
             'primm' => $primmData
         ]);
     }
@@ -62,12 +71,20 @@ class CourseSiswaController extends Controller
         ->exists();    
 
         return Inertia::render('siswa/courseSiswa/showPrimm', [
-            'course' => $course,
-            'primm' => $primmData,
-            'activeStepFromUrl' => $step,
-            'existingAnswers' => $existingAnswers,
-            'isAllFinished' => $isAllFinished
-        ]);
+
+        'course' => [
+            'id' => $course->id,
+            'title' => $course->title,
+            'description' => $course->description, 
+            'link' => $course->link,
+            'file' => $course->file,
+            'link_drive' => $course->link_drive,
+        ],
+        'primm' => $primmData,
+        'activeStepFromUrl' => $step,
+        'existingAnswers' => $existingAnswers,
+        'isAllFinished' => $isAllFinished
+    ]);
     }
 
     public function saveProgress(Request $request)

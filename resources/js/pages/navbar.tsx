@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -8,15 +9,37 @@ export default function Navbar({ canRegister = true }: { canRegister?: boolean }
   const auth = page.props.auth;
   const { url } = usePage();
 
-  const isActive = (path: string) => {
-    if (path === '/') {
-      return url === '/';
-    }
-    return url.startsWith(path);
-  };
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const sectionIds = ['home', 'guide', 'about', 'contact'];
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.6 } 
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+    const isUrlActive = (path: string) => {
+      if (path === '/') return url === '/';
+      return url.startsWith(path);
+    };
 
   return (
-    <header className="bg-[#0F828C] text-white border-b border-[#0d6d74]">
+    <header  className="fixed top-0 inset-x-0 w-full z-50 bg-[#0F828C] text-white border-b border-[#0d6d74]">
       <nav className="max-w-7xl mx-auto flex items-center justify-between p-4 gap-6">
         <div className="flex items-center">
           <AppLogoIcon className="size-7 text-white" />
@@ -24,37 +47,26 @@ export default function Navbar({ canRegister = true }: { canRegister?: boolean }
         </div>
 
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            className={`px-4 py-1.5 ${isActive('/') && 'bg-[#78B9B5]'}`}
-            asChild
-          >
-            <Link href="/">Beranda</Link>
+          <Button variant="ghost" asChild className={`px-4 py-1.5 ${activeSection === 'home' ? 'bg-[#78B9B5]' : ''}`}>
+            <a href="#home">Beranda</a>
           </Button>
 
-          <Button
-            variant="ghost"
-            className={`px-4 py-1.5 ${isActive('/petunjuk') && 'bg-[#78B9B5]'}`}
-            asChild
-          >
-            <Link href="/petunjuk">Petunjuk</Link>
+          {/* Tombol Petunjuk */}
+          <Button variant="ghost" asChild className={`px-4 py-1.5 ${activeSection === 'guide' ? 'bg-[#78B9B5]' : ''}`}>
+            <a href="#guide">Petunjuk</a>
           </Button>
 
-          <Button
-            variant="ghost"
-            className={`px-4 py-1.5 ${isActive('/tentang') && 'bg-[#78B9B5]'}`}
-            asChild
-          >
-            <Link href="/tentang">Tentang</Link>
+          {/* Tombol Tentang */}
+          <Button variant="ghost" asChild className={`px-4 py-1.5 ${activeSection === 'about' ? 'bg-[#78B9B5]' : ''}`}>
+            <a href="#about">Tentang</a>
           </Button>
 
-          <Button
-            variant="ghost"
-            className={`px-4 py-1.5 ${isActive('/kontak') && 'bg-[#78B9B5]'}`}
-            asChild
-          >
-            <Link href="/kontak">Kontak</Link>
+          {/* Tombol Kontak */}
+          <Button variant="ghost" asChild className={`px-4 py-1.5 ${activeSection === 'contact' ? 'bg-[#78B9B5]' : ''}`}>
+            <a href="#contact">Kontak</a>
           </Button>
+
+          <div className="h-6 w-[1px] bg-white/20 mx-2 hidden sm:block" />
 
           {auth?.user ? (
             <Button
@@ -68,12 +80,20 @@ export default function Navbar({ canRegister = true }: { canRegister?: boolean }
             </Button>
           ) : (
             <>
-              <Button variant="ghost" className={`px-4 py-1.5 ${isActive('/login') && 'bg-[#78B9B5]'}`} asChild>
+              <Button 
+                variant="ghost" 
+                className={`px-4 py-1.5 ${isUrlActive('/login') && 'bg-[#78B9B5]'}`} 
+                asChild
+              >
                 <Link href="/login">Login</Link>
               </Button>
 
               {canRegister && (
-                <Button variant="ghost" className={`px-4 py-1.5 ${isActive('/register') && 'bg-[#78B9B5]'}`} asChild>
+                <Button 
+                  variant="ghost" 
+                  className={`px-4 py-1.5 ${isUrlActive('/register') && 'bg-[#78B9B5]'}`} 
+                  asChild
+                >
                   <Link href="/register">Daftar</Link>
                 </Button>
               )}

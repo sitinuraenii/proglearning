@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import FormTambahMateri from './form-tambah-materi'; 
-import { Plus, FileText, CheckCircle2 } from "lucide-react"; 
+import { Plus, FileText, CheckCircle2, Pencil,Trash2 } from "lucide-react"; 
 import { Link, router, usePage } from '@inertiajs/react';
+import FormEditMateri from './form-edit-materi';
 
 type Category = {
   id: number;
@@ -15,6 +16,7 @@ type Course = {
   title: string;
   description: string;
   category?: Category;
+  link_drive?: string;
 };
 
 type PageProps = {
@@ -52,6 +54,24 @@ const ListMateri = () => {
     };
   };
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  const handleEdit = (materi: Course) => {
+    setSelectedCourse(materi);
+    setIsEditModalOpen(true);
+  };
+
+const confirmDelete = (id: number) => {
+    if (confirm("Apakah Anda yakin? Progres dan jawaban siswa pada materi ini akan ikut terhapus permanen.")) {
+        router.delete(`/guru/course/destroy/${id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+            },
+        });
+    }
+};
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-6">
@@ -63,50 +83,62 @@ const ListMateri = () => {
                 </div>
             </div>
         )}
-        <div className="flex justify-between items-center mb-6">
+       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-emerald-400 transition shadow-md"
+            className="w-full sm:w-auto bg-emerald-600 text-white px-5 py-3 sm:py-2 rounded-xl font-bold hover:bg-emerald-500 transition shadow-md flex justify-center items-center gap-2"
           >
-            <Plus size={16} className='inline-block' />
-            Tambah Materi
+            <Plus size={18} />
+            <span>Tambah Materi</span>
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <table className="w-full text-left">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+         <div className="overflow-x-auto"> 
+          <table className="w-full text-left min-w-[800px]">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="p-4 text-gray-600">Judul</th>
-                <th className="p-4 text-gray-600">Kategori</th>
-                <th className="p-4 text-gray-600">Deskripsi</th>
-                <th className="p-4 text-center text-gray-600">Aksi Detail</th>
+                <th className="p-4 text-gray-600 font-bold text-sm uppercase">Materi</th>
+                <th className="p-4 text-gray-600 font-bold text-sm uppercase">Kategori</th>
+                <th className="p-4 text-gray-600 font-bold text-sm uppercase">Deskripsi</th>
+                <th className="p-4 text-gray-600 font-bold text-sm uppercase text-center">Tautan</th>
+                <th className="p-4 text-center text-gray-600 font-bold text-sm uppercase">Aksi</th>
               </tr>
             </thead>
 
             <tbody className="divide-y">
-              {courses.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="p-10 text-center text-gray-400 italic">
-                    Belum ada materi
+              {courses.map((materi) => (
+                <tr key={materi.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4 font-bold text-gray-800">{materi.title}</td>
+                  <td className="p-4 text-gray-700">{materi.category?.name ?? '-'}</td>
+                  <td className="p-4 text-gray-600 text-sm max-w-[200px]">
+                    <p className="truncate" title={materi.description}>{materi.description}</p>
                   </td>
-                </tr>
-              ) : (
-                courses.map((materi) => (
-                  <tr key={materi.id} className="hover:bg-gray-50 transition">
-                    <td className="p-4 font-semibold text-gray-800">
-                      {materi.title}
-                    </td>
+                  <td className="p-4 text-center">
+                    {materi.link_drive ? (
+                      <a href={materi.link_drive} target="_blank" className="inline-flex items-center text-blue-600 hover:underline">
+                        <FileText size={18} />
+                      </a>
+                    ) : <span className="text-gray-300">-</span>}
+                  </td>
+                  <td className="p-4">
+                    <div className="flex justify-center gap-2 flex-wrap min-w-[200px]">
+                      <button 
+                          onClick={() => handleEdit(materi)}
+                          className="p-2 bg-amber-100 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm group"
+                          title="Edit Materi"
+                      >
+                          <Pencil size={18} className="group-hover:scale-110 transition-transform" /> 
+                      </button>
 
-                    <td className="p-4 font-semibold text-gray-800">
-                      {materi.category?.name ?? '-'}
-                    </td>
-
-                    <td className="p-4 text-gray-600 text-sm">
-                      {materi.description}
-                    </td>
-
-                    <td className="p-4 flex justify-center gap-2">
+                      <button 
+                        onClick={() => confirmDelete(materi.id)}
+                        className="p-2 bg-red-100 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm group"
+                        title="Hapus Materi"
+                      >
+                        <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
+                      </button>
+                      
                       <Link 
                         href={`/guru/course/content-materi/${materi.id}?judul=${encodeURIComponent(materi.title)}&kategori=${encodeURIComponent(materi.category?.name || '')}&deskripsi=${encodeURIComponent(materi.description)}`}
                         className="group flex items-center gap-2 bg-white border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white px-4 py-2 rounded-xl font-black text-[12px] uppercase tracking-wider transition-all active:scale-95 shadow-sm"
@@ -122,13 +154,14 @@ const ListMateri = () => {
                         <Plus size={14} strokeWidth={3} />
                         Aktivitas PRIMM
                       </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
+      </div>
 
         <FormTambahMateri 
           isOpen={isModalOpen} 
@@ -136,6 +169,18 @@ const ListMateri = () => {
           categories={categories}
           onSimpan={handleSimpanMateri}
         />
+
+        {selectedCourse && (
+          <FormEditMateri 
+            isOpen={isEditModalOpen} 
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setSelectedCourse(null);
+            }} 
+            categories={categories}
+            course={selectedCourse} 
+          />
+        )}
 
       </div>
     </AppLayout>
